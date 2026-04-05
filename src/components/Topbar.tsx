@@ -1,7 +1,7 @@
 "use client";
 import { useTheme } from "next-themes";
 import { useAppStore } from "@/store/useAppStore";
-import { Sun, Moon, Bell, Download } from "lucide-react";
+import { Sun, Moon, Bell, Download, Menu } from "lucide-react";
 import { useEffect, useState } from "react";
 
 const PAGE_TITLES: Record<string, { title: string; subtitle: string }> = {
@@ -10,7 +10,11 @@ const PAGE_TITLES: Record<string, { title: string; subtitle: string }> = {
   insights: { title: "Insights", subtitle: "Patterns and observations from your data" },
 };
 
-export default function Topbar() {
+interface TopbarProps {
+  onMenuClick: () => void;
+}
+
+export default function Topbar({ onMenuClick }: TopbarProps) {
   const { theme, setTheme } = useTheme();
   const { activeTab, transactions, role } = useAppStore();
   const [mounted, setMounted] = useState(false);
@@ -23,11 +27,7 @@ export default function Topbar() {
     const csv = [
       ["Date", "Description", "Category", "Type", "Amount"],
       ...transactions.map((t) => [
-        t.date,
-        t.description,
-        t.category,
-        t.type,
-        t.amount.toString(),
+        t.date, t.description, t.category, t.type, t.amount.toString(),
       ]),
     ]
       .map((row) => row.join(","))
@@ -42,32 +42,43 @@ export default function Topbar() {
 
   return (
     <header
-      className="flex items-center justify-between px-8 py-5 border-b"
+      className="flex items-center justify-between px-4 lg:px-8 py-5 border-b sticky top-0 z-10"
       style={{
         background: "var(--bg-card)",
         borderColor: "var(--border)",
       }}
     >
-      <div>
-        <h1
-          className="font-bold text-xl leading-tight"
-          style={{
-            fontFamily: "'Syne', sans-serif",
-            color: "var(--text-primary)",
-          }}
+      <div className="flex items-center gap-3">
+        {/* Hamburger — sirf mobile pe dikhega */}
+        <button
+          onClick={onMenuClick}
+          className="lg:hidden w-9 h-9 rounded-lg flex items-center justify-center btn-ghost"
+          style={{ padding: 0 }}
         >
-          {title}
-        </h1>
-        <p className="text-sm mt-0.5" style={{ color: "var(--text-muted)" }}>
-          {subtitle}
-        </p>
+          <Menu size={18} />
+        </button>
+
+        <div>
+          <h1
+            className="font-bold text-xl leading-tight"
+            style={{
+              fontFamily: "'Syne', sans-serif",
+              color: "var(--text-primary)",
+            }}
+          >
+            {title}
+          </h1>
+          <p className="text-sm mt-0.5 hidden sm:block" style={{ color: "var(--text-muted)" }}>
+            {subtitle}
+          </p>
+        </div>
       </div>
 
       <div className="flex items-center gap-2">
         {role === "admin" && (
           <button
             onClick={handleExport}
-            className="btn-ghost flex items-center gap-2"
+            className="btn-ghost hidden sm:flex items-center gap-2"
           >
             <Download size={14} />
             Export CSV
@@ -75,7 +86,7 @@ export default function Topbar() {
         )}
 
         <button
-          className="relative w-9 h-9 rounded-lg flex items-center justify-center transition-all btn-ghost"
+          className="relative w-9 h-9 rounded-lg flex items-center justify-center btn-ghost"
           style={{ padding: 0 }}
         >
           <Bell size={16} />
