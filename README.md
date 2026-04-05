@@ -6,7 +6,8 @@ A modern, interactive finance dashboard built for the Zorvyn Frontend Developer 
 ## 🚀 Quick Start
 ```bash
 # 1. Repository clone karo
-git clone https://github.com/tumhara-username/finance-dashboard.git
+git clone https://github.com/Krishkumar2005/Finance-Dashboard.git
+
 cd finance-dashboard
 
 # 2. Dependencies install karo
